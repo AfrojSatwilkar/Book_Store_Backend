@@ -1,0 +1,535 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Integration with PHP Laravel",
+        "description": "Integrate Swagger in Laravel application",
+        "contact": {
+            "email": "afrozsatvilkar2014@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/addbook": {
+            "post": {
+                "summary": "Add Book",
+                "description": "Admin Can Add Book ",
+                "operationId": "eda1db9386a16a065c77e2292acdfb26",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "author",
+                                    "image",
+                                    "Price",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "author": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "file"
+                                    },
+                                    "Price": {
+                                        "type": "decimal"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book created successfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/updatebook": {
+            "post": {
+                "summary": "Update Book",
+                "description": "Admin Can Update Book ",
+                "operationId": "a04b3bc06167ac6c05240c128d811ab9",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "description",
+                                    "author",
+                                    "image",
+                                    "Price"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "author": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "file"
+                                    },
+                                    "Price": {
+                                        "type": "decimal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book updated Sucessfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/addquantity": {
+            "post": {
+                "summary": "Add Quantity to Existing Book",
+                "description": " Add Book Quantity ",
+                "operationId": "48b2f793b375e2fb01165ba40c0cce4c",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book Quantity updated Successfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/deletebook": {
+            "post": {
+                "summary": "Delete the book from BookStoreApp",
+                "description": " Delete Book ",
+                "operationId": "831a74bc8ac61c7a30b515d9f82dbf0f",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book deleted Sucessfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/displaybooks": {
+            "get": {
+                "summary": "Display All Books",
+                "description": " Display All Books Present in the BookStore ",
+                "operationId": "7bf537fdedd60254654c93acd171e750",
+                "requestBody": {},
+                "responses": {
+                    "201": {
+                        "description": "Books Available in the Bookstore are"
+                    },
+                    "404": {
+                        "description": "Books are not there"
+                    }
+                }
+            }
+        },
+        "/api/addtocart": {
+            "post": {
+                "summary": "Add the book to Cart",
+                "description": " Add to cart ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "book_id"
+                                ],
+                                "properties": {
+                                    "book_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book added to Cart Sucessfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/deletecart": {
+            "post": {
+                "summary": "Delete the book from cart",
+                "description": " Delete cart ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book deleted Sucessfully from cart"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getcart": {
+            "get": {
+                "summary": "Get All Books Present in Cart",
+                "description": " Get All Books Present in Cart ",
+                "requestBody": {},
+                "responses": {
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/forgotpassword": {
+            "post": {
+                "summary": "forgotpassword",
+                "description": "Send Mail to the respectice mail id for forget password link",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "we have mailed your password reset link to respective E-mail"
+                    },
+                    "404": {
+                        "description": "we can not find a user with that email address"
+                    }
+                }
+            }
+        },
+        "/api/resetpassword": {
+            "post": {
+                "summary": "resetpassword",
+                "description": "reset your password",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "new_password",
+                                    "confirm_password"
+                                ],
+                                "properties": {
+                                    "new_password": {
+                                        "type": "password"
+                                    },
+                                    "confirm_password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Password reset successfull!"
+                    },
+                    "400": {
+                        "description": "we can not find the user with that e-mail address"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "summary": "register",
+                "description": "register the user for login",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "role",
+                                    "firstname",
+                                    "lastname",
+                                    "phone_no",
+                                    "email",
+                                    "password",
+                                    "confirm_password"
+                                ],
+                                "properties": {
+                                    "role": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "phone_no": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    },
+                                    "confirm_password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User successfully registered"
+                    },
+                    "401": {
+                        "description": "The email has already been taken"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "summary": "login",
+                "description": "user login",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "login Success"
+                    },
+                    "401": {
+                        "description": "we can not find the user with that e-mail address You need to register first"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "summary": "logout",
+                "description": "logout user",
+                "operationId": "67d5147477c548bfbc3f982833bbc7bd",
+                "requestBody": {},
+                "responses": {
+                    "201": {
+                        "description": "User successfully registered"
+                    },
+                    "401": {
+                        "description": "The email has already been taken"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "description": "Laravel bearer token authentication",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
