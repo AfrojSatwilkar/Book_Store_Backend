@@ -324,6 +324,84 @@
                 ]
             }
         },
+        "/api/increamentquantity": {
+            "post": {
+                "summary": "Add Quantity to Existing Book in cart",
+                "description": " Add Book Quantity  in cart",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book Quantity increament Successfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/decreamentquantity": {
+            "post": {
+                "summary": "Add Quantity to Existing Book in cart",
+                "description": " Add Book Quantity  in cart",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book Quantity decreament Successfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/forgotpassword": {
             "post": {
                 "summary": "forgotpassword",

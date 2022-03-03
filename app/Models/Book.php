@@ -25,7 +25,7 @@ class Book extends Model
     }
 
     public function findBook($bookId) {
-        $book = Book::where('id', $bookId)->get();
+        $book = Book::where('id', $bookId)->first();
         return $book;
     }
 

@@ -74,7 +74,7 @@ class BookController extends Controller
                     throw new BookStoreException("Book is already exist in store", 401);
                 }
                 $imageName = time() . '.' . $request->image->extension();
-                $path = Storage::disk('s3')->put('images', $request->image);
+                $path = Storage::disk('s3')->put('book_images', $request->image);
                 $url = env('AWS_URL') . $path;
                 $book = new Book;
                 $book->name = $request->input('name');
@@ -168,7 +168,7 @@ class BookController extends Controller
                 if (Storage::disk('s3')->exists($path)) {
                     Storage::disk('s3')->delete($path);
                 }
-                $path = Storage::disk('s3')->put('images', $request->image);
+                $path = Storage::disk('s3')->put('book_images', $request->image);
                 $pathurl = env('AWS_URL') . $path;
                 $book->image = $pathurl;
             }
@@ -322,7 +322,6 @@ class BookController extends Controller
      *   summary="Display All Books",
      *   description=" Display All Books Present in the BookStore ",
      *   @OA\RequestBody(
-     *
      *    ),
      *   @OA\Response(response=201, description="Books Available in the Bookstore are"),
      *   @OA\Response(response=404, description="Books are not there"),
@@ -334,9 +333,8 @@ class BookController extends Controller
     public function getAllBooks()
     {
         try {
-            $book = Cache::remember('books', 3600, function () {
-                return DB::table('books')->get();
-            });
+            $book = Book::paginate(3);
+
             if ($book == []) {
                 throw new BookStoreException("Books are not there", 404);
             }
@@ -349,5 +347,4 @@ class BookController extends Controller
             return $exception->message();
         }
     }
-
 }

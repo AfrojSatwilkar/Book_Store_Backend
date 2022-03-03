@@ -58,7 +58,7 @@ class CartController extends Controller
             $book = new Book();
             $user = new User();
             $userId = $user->userVerification($currentUser->id);
-            if (count($userId) == 0) {
+            if (!$userId) {
                 return response()->json(['message' => 'You are not an User'], 404);
             }
             if ($currentUser) {
@@ -79,24 +79,18 @@ class CartController extends Controller
                     ], 404);
                 }
                 $book_cart = $cart->bookCart($book_id, $currentUser->id);
-                // $book_cart = Cart::select('id')->where([
-                //     ['book_id', '=', $book_id],
-                //     ['user_id', '=', $currentUser->id]
-                // ])->get();
 
-                if (!$book_cart) {
-                    $book_cart->book_quantity += 1;
-                    $book_cart->save();
+                if ($book_cart ) {
                     return response()->json([
                         'status' => 404,
-                        'message' => 'Book quantity increament'
+                        'message' => 'Book already added in cart'
                     ], 404);
                 }
 
                 $cart->book_id = $request->get('book_id');
 
                 if ($currentUser->carts()->save($cart)) {
-                    $value = Cache::remember('carts', 3600, function () {
+                    Cache::remember('carts', 3600, function () {
                         return DB::table('carts')->get();
                     });
                     return response()->json([
@@ -154,7 +148,6 @@ class CartController extends Controller
         try {
             $id = $request->input('id');
             $currentUser = JWTAuth::parseToken()->authenticate();
-            // $cart = new Cart();
             $user = new User();
             $userId = $user->userVerification($currentUser->id);
             if (!$userId) {
@@ -206,7 +199,6 @@ class CartController extends Controller
         try {
             $currentUser = JWTAuth::parseToken()->authenticate();
             $user = new User();
-            // $cart = new Cart();
             $userId = $user->userVerification($currentUser->id);
             if (!$userId) {
                 return response()->json(['message' => 'You are not an User'], 404);
@@ -231,6 +223,146 @@ class CartController extends Controller
                 Log::error('Invalid User');
                 throw new BookStoreException("Invalid authorization token", 404);
             }
+        } catch (BookStoreException $exception) {
+            return $exception->message();
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/increamentquantity",
+     *   summary="Add Quantity to Existing Book in cart",
+     *   description=" Add Book Quantity  in cart",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"id"},
+     *               @OA\Property(property="id", type="integer"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=201, description="Book Quantity increament Successfully"),
+     *   @OA\Response(response=404, description="Invalid authorization token"),
+     *   security = {
+     * {
+     * "Bearer" : {}}}
+     * )
+     */
+    /**
+     * This function will take input as cart id and quantity from user and update
+     * the quantity for the respective cart id and user
+     */
+    public function increamentBookQuantityInCart(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        try {
+            $currentUser = JWTAuth::parseToken()->authenticate();
+            $cart = new Cart();
+            $user = new User();
+            $userId = $user->userVerification($currentUser->id);
+            if (!$userId) {
+                return response()->json(['message' => 'You are not an User'], 404);
+            }
+            if (!$currentUser) {
+                Log::error('Invalid User');
+                throw new BookStoreException("Invalid authorization token", 404);
+            }
+            $cart = Cart::find($request->id);
+
+            if (!$cart) {
+                return response()->json([
+                    'message' => 'Item Not found with this id'
+                ], 404);
+            }
+            $cart->book_quantity += 1;
+            $cart->save();
+            Log::info('Book Quantity increament Successfully to the bookstore cart');
+            return response()->json([
+                'message' => 'Book Quantity increament Successfully'
+            ], 201);
+        } catch (BookStoreException $exception) {
+            return $exception->message();
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/decreamentquantity",
+     *   summary="Add Quantity to Existing Book in cart",
+     *   description=" Add Book Quantity  in cart",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"id"},
+     *               @OA\Property(property="id", type="integer"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=201, description="Book Quantity decreament Successfully"),
+     *   @OA\Response(response=404, description="Invalid authorization token"),
+     *   security = {
+     * {
+     * "Bearer" : {}}}
+     * )
+     */
+    /**
+     * This function will take input as cart id and quantity from user and update
+     * the quantity for the respective cart id and user
+     */
+    public function decreamentBookQuantityInCart(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        try {
+            $currentUser = JWTAuth::parseToken()->authenticate();
+            $cart = new Cart();
+            $user = new User();
+            $userId = $user->userVerification($currentUser->id);
+            if (!$userId) {
+                return response()->json(['message' => 'You are not an User'], 404);
+            }
+            if (!$currentUser) {
+                Log::error('Invalid User');
+                throw new BookStoreException("Invalid authorization token", 404);
+            }
+            $cart = Cart::find($request->id);
+
+            if (!$cart) {
+                return response()->json([
+                    'message' => 'Item Not found with this id'
+                ], 404);
+            }
+            $cart->book_quantity -= 1;
+            $cart->save();
+            if($cart->book_quantity == 0) {
+                $cart->delete();
+                return response()->json([
+                    'message' => 'Book Successfully remove from cart'
+                ], 201);
+            }
+            Log::info('Book Quantity decreament Successfully to the bookstore cart');
+            return response()->json([
+                'message' => 'Book Quantity decreament Successfully'
+            ], 201);
         } catch (BookStoreException $exception) {
             return $exception->message();
         }

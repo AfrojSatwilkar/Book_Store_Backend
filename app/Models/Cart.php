@@ -11,16 +11,11 @@ class Cart extends Model
     protected $table="carts";
     protected $fillable = ['book_id'];
 
-    public function userVerification($currentUserId){
-        $userId = User::select('id')->where([['role', '=', 'user'], ['id', '=', $currentUserId]])->get();
-        return $userId;
-    }
-
     public function bookCart($book_id, $userId) {
         return Cart::where([
             ['book_id', '=', $book_id],
             ['user_id', '=', $userId]
-        ])->get();
+        ])->first();
     }
 
     public function book()

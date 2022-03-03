@@ -39,4 +39,6 @@ Route::group(['middleware' => 'api'], function() {
     Route::post('addtocart', [CartController::class, 'addBookToCartByBookId']);
     Route::post('deletecart', [CartController::class, 'deleteBookByCartId']);
     Route::get('getcart', [CartController::class, 'getAllBooksByUserId']);
+    Route::post('increamentquantity', [CartController::class, 'increamentBookQuantityInCart']);
+    Route::post('decreamentquantity', [CartController::class, 'decreamentBookQuantityInCart']);
 });
