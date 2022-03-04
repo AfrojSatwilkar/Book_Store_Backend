@@ -347,4 +347,67 @@ class BookController extends Controller
             return $exception->message();
         }
     }
+
+    /**
+     * @OA\Get(
+     *   path="/api/sortlowtohigh",
+     *   summary="sort on ascending order",
+     *   description=" sort on ascending order ",
+     *   @OA\RequestBody(
+     *
+     *    ),
+     *   @OA\Response(response=201, description="These much books are in store ....."),
+     *   security = {
+     * {
+     * "Bearer" : {}}}
+     * )
+     */
+    public function sortOnPriceLowToHigh()
+    {
+        $currentUser = JWTAuth::parseToken()->authenticate();
+
+        if ($currentUser) {
+            $book = Book::orderBy('books.Price')
+                ->get();
+        }
+        if ($book == []) {
+            return response()->json(['message' => 'Books not found'], 404);
+        }
+        return response()->json([
+            'books' => $book,
+            'message' => 'These much books are in store .....'
+        ], 201);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/sorthightolow",
+     *   summary="sort on Descending order",
+     *   description=" sort on Descending order ",
+     *   @OA\RequestBody(
+     *
+     *    ),
+     *   @OA\Response(response=201, description="These much books are in store ....."),
+     *   security = {
+     * {
+     * "Bearer" : {}}}
+     * )
+     */
+    public function sortOnPriceHighToLow()
+    {
+
+        $currentUser = JWTAuth::parseToken()->authenticate();
+
+        if ($currentUser) {
+            $book = Book::orderBy('books.Price', 'desc')
+                ->get();
+        }
+        if ($book == []) {
+            return response()->json(['message' => 'Books not found'], 404);
+        }
+        return response()->json([
+            'books' => $book,
+            'message' => 'These much books are in store .....'
+        ], 201);
+    }
 }

@@ -252,7 +252,7 @@ class CartController extends Controller
      * )
      */
     /**
-     * This function will take input as cart id and quantity from user and update
+     * This function will take input as cart id and increament
      * the quantity for the respective cart id and user
      */
     public function increamentBookQuantityInCart(Request $request)
@@ -319,7 +319,7 @@ class CartController extends Controller
      * )
      */
     /**
-     * This function will take input as cart id and quantity from user and update
+     * This function will take input as cart id and decreament
      * the quantity for the respective cart id and user
      */
     public function decreamentBookQuantityInCart(Request $request)

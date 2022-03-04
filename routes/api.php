@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -35,10 +36,18 @@ Route::group(['middleware' => 'api'], function() {
     Route::post('addquantity', [BookController::class, 'addQuantityToExistingBook']);
     Route::post('deletebook', [BookController::class, 'deleteBookByBookId']);
     Route::get('displaybooks', [BookController::class, 'getAllBooks']);
+    Route::get('sortlowtohigh', [BookController::class, 'sortOnPriceLowToHigh']);
+    Route::get('sorthightolow', [BookController::class, 'sortOnPriceHighToLow']);
 
     Route::post('addtocart', [CartController::class, 'addBookToCartByBookId']);
     Route::post('deletecart', [CartController::class, 'deleteBookByCartId']);
     Route::get('getcart', [CartController::class, 'getAllBooksByUserId']);
     Route::post('increamentquantity', [CartController::class, 'increamentBookQuantityInCart']);
     Route::post('decreamentquantity', [CartController::class, 'decreamentBookQuantityInCart']);
+
+    Route::post('addaddress', [AddressController::class, 'addAddress']);
+    Route::post('updateaddress', [AddressController::class, 'updateAddress']);
+    Route::post('deleteaddress', [AddressController::class, 'deleteAddress']);
+    Route::get('getaddress', [AddressController::class, 'getAddress']);
+
 });

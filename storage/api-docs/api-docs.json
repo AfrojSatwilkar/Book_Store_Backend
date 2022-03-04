@@ -9,6 +9,180 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/addaddress": {
+            "post": {
+                "summary": "Add Address",
+                "description": "User Can Add Address ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "address",
+                                    "city",
+                                    "state",
+                                    "landmark",
+                                    "pincode",
+                                    "address_type"
+                                ],
+                                "properties": {
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "state": {
+                                        "type": "string"
+                                    },
+                                    "landmark": {
+                                        "type": "string"
+                                    },
+                                    "pincode": {
+                                        "type": "integer"
+                                    },
+                                    "address_type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address Added Successfully"
+                    },
+                    "401": {
+                        "description": "Address alredy present for the user"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/updateaddress": {
+            "post": {
+                "summary": "Update Address",
+                "description": "User Can Update Address ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "address",
+                                    "city",
+                                    "state",
+                                    "landmark",
+                                    "pincode",
+                                    "address_type"
+                                ],
+                                "properties": {
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "state": {
+                                        "type": "string"
+                                    },
+                                    "landmark": {
+                                        "type": "string"
+                                    },
+                                    "pincode": {
+                                        "type": "integer"
+                                    },
+                                    "address_type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address Updated Successfully"
+                    },
+                    "401": {
+                        "description": "Address not present add address first"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/deleteaddress": {
+            "post": {
+                "summary": "Delete Address",
+                "description": " Delete Address ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book deleted Sucessfully from cart"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/getaddress": {
+            "get": {
+                "summary": "Get address ",
+                "description": " Get Address ",
+                "requestBody": {},
+                "responses": {
+                    "404": {
+                        "description": "Address not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/addbook": {
             "post": {
                 "summary": "Add Book",
@@ -227,6 +401,42 @@
                         "description": "Books are not there"
                     }
                 }
+            }
+        },
+        "/api/sortlowtohigh": {
+            "get": {
+                "summary": "sort on ascending order",
+                "description": " sort on ascending order ",
+                "operationId": "68ba67ef9f8275d07c2e453e45c83be5",
+                "requestBody": {},
+                "responses": {
+                    "201": {
+                        "description": "These much books are in store ....."
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/sorthightolow": {
+            "get": {
+                "summary": "sort on Descending order",
+                "description": " sort on Descending order ",
+                "operationId": "983c1d44dc0db0dbe1e7a75a21e0df03",
+                "requestBody": {},
+                "responses": {
+                    "201": {
+                        "description": "These much books are in store ....."
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/api/addtocart": {
