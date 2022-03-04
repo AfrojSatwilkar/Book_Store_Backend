@@ -22,12 +22,12 @@ class UserControllerTest extends TestCase
             "role" => "user",
             "firstname" => "Afroj",
             "lastname" => "satwilkar",
-            "email" => "afrozsatvilka2014@gmail.com",
+            "email" => "afrozjaid@gmail.com",
             "phone_no"=> "8766846428",
             "password" => "Afroj@786",
             "confirm_password" => "Afroj@786"
         ]);
-        $response->assertStatus(201)->assertJson(['message' => 'User successfully registered']);
+        $response->assertStatus(201)->assertJson(['message' => 'User Successfully Registered']);
     }
     /**
      * @test for

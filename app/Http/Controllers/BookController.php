@@ -410,4 +410,62 @@ class BookController extends Controller
             'message' => 'These much books are in store .....'
         ], 201);
     }
+
+    /**
+     * @OA\Post(
+     *   path="/api/searchbook",
+     *   summary="search the book from BookStoreApp",
+     *   description=" Search Book ",
+     *   @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"search"},
+     *               @OA\Property(property="search", type="string"),
+     *            ),
+     *        ),
+     *    ),
+     *   @OA\Response(response=201, description="Serch done Successfully"),
+     *   @OA\Response(response=403, description="Invalid authorization token"),
+     *   security = {
+     * {
+     * "Bearer" : {}}}
+     * )
+     */
+    public function searchByEnteredKeyWord(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'search' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        try {
+            $searchKey = $request->input('search');
+            $currentUser = JWTAuth::parseToken()->authenticate();
+
+            if ($currentUser) {
+                $userbooks = Book::leftJoin('carts', 'carts.book_id', '=', 'books.id')
+                    ->select('books.id', 'books.name', 'books.description', 'books.author', 'books.image', 'books.Price', 'books.quantity')
+                    ->Where('books.name', 'like', '%' . $searchKey . '%')
+                    ->orWhere('books.author', 'like', '%' . $searchKey . '%')
+                    ->get();
+
+                if ($userbooks == '[]') {
+                    Log::error('No Book Found');
+                    throw new BookStoreException("No Book Found For Entered Search Key !!!", 404);
+                }
+                Log::info('Search is Successfull');
+                return response()->json([
+                    'message' => 'Serch done Successfully',
+                    'books' => $userbooks
+                ], 201);
+            }
+        } catch (BookStoreException $exception) {
+            return $exception->message();
+        }
+    }
 }

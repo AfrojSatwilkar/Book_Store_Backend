@@ -5,6 +5,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,7 @@ Route::group(['middleware' => 'api'], function() {
     Route::get('displaybooks', [BookController::class, 'getAllBooks']);
     Route::get('sortlowtohigh', [BookController::class, 'sortOnPriceLowToHigh']);
     Route::get('sorthightolow', [BookController::class, 'sortOnPriceHighToLow']);
+    Route::post('searchbook', [BookController::class, 'searchByEnteredKeyWord']);
 
     Route::post('addtocart', [CartController::class, 'addBookToCartByBookId']);
     Route::post('deletecart', [CartController::class, 'deleteBookByCartId']);
@@ -49,5 +51,10 @@ Route::group(['middleware' => 'api'], function() {
     Route::post('updateaddress', [AddressController::class, 'updateAddress']);
     Route::post('deleteaddress', [AddressController::class, 'deleteAddress']);
     Route::get('getaddress', [AddressController::class, 'getAddress']);
+
+    Route::post('addtowishlist', [WishlistController::class, 'addBookToWishlistByBookId']);
+    Route::post('deletewishlist', [WishlistController::class, 'deleteBookByWishlistId']);
+    Route::get('getwishlist', [WishlistController::class, 'getAllBooksInWishlist']);
+
 
 });

@@ -84,16 +84,14 @@ class UserController extends Controller
 
             $userDetails = $userObject->saveUserDetails($userArray);
             Log::info('Registered user Email : ' . 'Email Id :' . $request->email);
-            $value = Cache::remember('users', 3600, function () {
+            Cache::remember('users', 3600, function () {
                 return DB::table('users')->get();
             });
+            return response()->json([
+                'status' => 201,
+                'message' => 'User Successfully Registered',
+            ], 201);
 
-            if ($userDetails) {
-                return response()->json([
-                    'status' => 201,
-                    'message' => 'User Successfully Registered ',
-                ], 201);
-            }
         } catch (BookStoreException $exception) {
             Log::error('Invalid User');
             return $exception->message();
