@@ -19,7 +19,7 @@ class Address extends Model
     ];
 
     public function addressExist($userId) {
-        return Address::where('user_id', $userId)->first();
+        return Address::where('id', $userId)->first();
     }
 
     public function saveAddressDetails($addressDetails) {

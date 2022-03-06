@@ -39,7 +39,7 @@ class AddressController extends Controller
      * "Bearer" : {}}}
      * )
      * */
-     /**
+    /**
      * This method will take input address,city,state,landmark,pincode and addresstype from user
      * and will store in the database for the respective user
      */
@@ -62,12 +62,12 @@ class AddressController extends Controller
             $currentUser = JWTAuth::parseToken()->authenticate();
             if ($currentUser) {
                 $address = new Address();
-                $address_exist = $address->addressExist($currentUser->id);
+                // $address_exist = $address->addressExist($currentUser->id);
 
-                if ($address_exist) {
-                    Log::error('Address alredy present');
-                    throw new BookStoreException("Address alredy present for the user", 401);
-                }
+                // if ($address_exist) {
+                //     Log::error('Address alredy present');
+                //     throw new BookStoreException("Address alredy present for the user", 401);
+                // }
 
                 $address->user_id = $currentUser->id;
                 $address->address = $request->input('address');
@@ -78,16 +78,16 @@ class AddressController extends Controller
                 $address->address_type = $request->input('address_type');
                 $address->save();
                 Log::info('Address Added To Respective User', ['user_id', '=', $currentUser->id]);
-                    return response()->json([
-                        'message' => ' Address Added Successfully'
-                    ], 201);
+                return response()->json([
+                    'message' => ' Address Added Successfully'
+                ], 201);
             }
         } catch (BookStoreException $exception) {
             return $exception->message();
         }
     }
 
-     /**
+    /**
      * @OA\Post(
      *   path="/api/updateaddress",
      *   summary="Update Address",
@@ -98,7 +98,8 @@ class AddressController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"address","city","state","landmark", "pincode", "address_type"},
+     *               required={"id","address","city","state","landmark", "pincode", "address_type"},
+     *               @OA\Property(property="id", type="integer"),
      *               @OA\Property(property="address", type="string"),
      *               @OA\Property(property="city", type="string"),
      *               @OA\Property(property="state", type="string"),
@@ -115,7 +116,7 @@ class AddressController extends Controller
      * "Bearer" : {}}}
      * )
      * */
-     /**
+    /**
      * This method will take input address,city,state,landmark,pincode,addresstype and where user
      * want to change then can update and will save in database the updated data which updated by
      * respective user
@@ -123,6 +124,7 @@ class AddressController extends Controller
     public function updateAddress(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'id' => 'required',
             'address' => 'required|string|between:2,600',
             'city' => 'required|string|between:2,100',
             'state' => 'required|string|between:2,100',
@@ -138,7 +140,7 @@ class AddressController extends Controller
             $currentUser = JWTAuth::parseToken()->authenticate();
             if ($currentUser) {
                 $address = new Address();
-                $address_exist = $address->addressExist($currentUser->id);
+                $address_exist = $address->addressExist($request->id);
 
                 if (!$address_exist) {
                     Log::error('Address is empty');
@@ -158,7 +160,7 @@ class AddressController extends Controller
         }
     }
 
-     /**
+    /**
      * @OA\Post(
      *   path="/api/deleteaddress",
      *   summary="Delete Address",
@@ -169,8 +171,8 @@ class AddressController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"user_id"},
-     *               @OA\Property(property="user_id", type="integer"),
+     *               required={"id"},
+     *               @OA\Property(property="id", type="integer"),
      *            ),
      *        ),
      *    ),
@@ -188,16 +190,16 @@ class AddressController extends Controller
     public function deleteAddress(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            'id' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
         try {
-            $user_id = $request->input('user_id');
+            $id = $request->input('id');
             $currentUser = JWTAuth::parseToken()->authenticate();
             $address = new Address();
-            $address_exist = $address->addressExist($user_id);
+            $address_exist = $address->addressExist($id);
 
             if (!$address_exist) {
                 throw new BookStoreException('User not Found', 404);
@@ -212,7 +214,7 @@ class AddressController extends Controller
         }
     }
 
-     /**
+    /**
      * @OA\Get(
      *   path="/api/getaddress",
      *   summary="Get address ",

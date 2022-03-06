@@ -24,6 +24,12 @@ class Book extends Model
         return $adminId;
     }
 
+    public function getBookDetails($bookName) {
+        return Book::select('id','name','quantity','author','Price')
+                    ->where('name', '=', $bookName)
+                    ->first();
+    }
+
     public function findBook($bookId) {
         $book = Book::where('id', $bookId)->first();
         return $book;

@@ -28,7 +28,8 @@ class OrderController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"name", "quantity"},
+     *               required={"address_id","name", "quantity"},
+     *               @OA\Property(property="address_id", type="integer"),
      *               @OA\Property(property="name", type="string"),
      *               @OA\Property(property="quantity", type="integer"),
      *            ),
@@ -44,6 +45,7 @@ class OrderController extends Controller
     public function placeOrder(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'address_id' => 'required',
             'name' => 'required',
             'quantity' => 'required',
         ]);
@@ -53,61 +55,41 @@ class OrderController extends Controller
         try {
             $currentUser = JWTAuth::parseToken()->authenticate();
             if ($currentUser) {
-                $get_book = Book::where('name', '=', $request->input('name'))->first();
-                if ($get_book == '') {
+                $book = new Book();
+                $address = new Address();
+                $bookDetails = $book->getBookDetails($request->input('name'));
+                if ($bookDetails == '') {
                     Log::error('Book is not available');
                     throw new BookStoreException("We Do not have this book in the store...", 401);
                 }
-                $get_quantity = Book::select('quantity')
-                    ->where([['books.user_id', '=', $currentUser->id], ['books.name', '=', $request->input('name')]])
-                    ->get();
 
-                if ($get_quantity < $request->input('quantity')) {
+                if ($bookDetails['quantity'] < $request->input('quantity')) {
                     Log::error('Book stock is not available');
                     throw new BookStoreException("This much stock is unavailable for the book", 401);
                 }
-                //getting bookID
-                $get_bookid = Book::select('id')
-                    ->where([['books.name', '=', $request->input('name')]])
-                    ->value('id');
 
                 //getting addressID
-                $get_addressid = Address::select('id')
-                    ->where([['user_id', '=', $currentUser->id]])
-                    ->value('id');
-
-                //get book name..
-                $get_BookName = Book::select('name')
-                    ->where('name', '=', $request->input('name'))
-                    ->value('name');
-
-                //get book author ...
-                $get_BookAuthor = Book::select('author')
-                    ->where('name', '=', $request->input('name'))
-                    ->value('author');
-
-                //get book price
-                $get_price = Book::select('Price')
-                    ->where([['books.name', '=', $request->input('name')]])
-                    ->value('Price');
+                $getAddress = $address->addressExist($request->input('address_id'));
+                if(!$getAddress) {
+                    throw new BookStoreException("This address id not available", 401);
+                }
 
                 //calculate total price
-                $total_price = $request->input('quantity') * $get_price;
+                $total_price = $request->input('quantity') * $bookDetails['Price'];
 
                 $order = Order::create([
                     'user_id' => $currentUser->id,
-                    'book_id' => $get_bookid,
-                    'address_id' => $get_addressid
+                    'book_id' => $bookDetails['id'],
+                    'address_id' => $getAddress['id'],
                 ]);
 
                 $userId = User::where('id', $currentUser->id)->first();
 
-                $delay = now()->addSeconds(10);
-                $userId->notify((new SendOrderDetails($order->order_id, $get_BookName, $get_BookAuthor, $request->input('quantity'), $total_price))->delay($delay));
+                $delay = now()->addSeconds(5);
+                $userId->notify((new SendOrderDetails($order->order_id, $bookDetails['name'], $bookDetails['author'], $request->input('quantity'), $total_price))->delay($delay));
 
-                $book = Book::find($get_bookid);
-                $book->quantity -= $request->quantity;
-                $book->save();
+                $bookDetails['quantity'] -= $request->quantity;
+                $bookDetails->save();
                 return response()->json([
                     'message' => 'Order Successfully Placed...',
                     'OrderId' => $order->order_id,

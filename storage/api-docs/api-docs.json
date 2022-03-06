@@ -77,6 +77,7 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
+                                    "id",
                                     "address",
                                     "city",
                                     "state",
@@ -85,6 +86,9 @@
                                     "address_type"
                                 ],
                                 "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
                                     "address": {
                                         "type": "string"
                                     },
@@ -136,10 +140,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "user_id"
+                                    "id"
                                 ],
                                 "properties": {
-                                    "user_id": {
+                                    "id": {
                                         "type": "integer"
                                     }
                                 },
@@ -652,6 +656,45 @@
                 ]
             }
         },
+        "/api/addtocartbywishlistid": {
+            "post": {
+                "summary": "Add the book to Cart",
+                "description": " Add to cart ",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "wishlist_id"
+                                ],
+                                "properties": {
+                                    "wishlist_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book added to Cart Sucessfully"
+                    },
+                    "404": {
+                        "description": "Invalid authorization token"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/forgotpassword": {
             "post": {
                 "summary": "forgotpassword",
@@ -739,10 +782,14 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
+                                    "address_id",
                                     "name",
                                     "quantity"
                                 ],
                                 "properties": {
+                                    "address_id": {
+                                        "type": "integer"
+                                    },
                                     "name": {
                                         "type": "string"
                                     },
