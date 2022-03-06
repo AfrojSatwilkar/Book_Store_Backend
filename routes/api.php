@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Http\Request;
@@ -56,5 +57,5 @@ Route::group(['middleware' => 'api'], function() {
     Route::post('deletewishlist', [WishlistController::class, 'deleteBookByWishlistId']);
     Route::get('getwishlist', [WishlistController::class, 'getAllBooksInWishlist']);
 
-
+    Route::post('placeorder', [OrderController::class, 'placeOrder']);
 });

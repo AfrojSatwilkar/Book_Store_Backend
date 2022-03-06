@@ -729,6 +729,50 @@
                 ]
             }
         },
+        "/api/placeorder": {
+            "post": {
+                "summary": "Place  Order",
+                "description": " Place a order ",
+                "operationId": "fd7520457d3033bbf590aee86f87920d",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order Successfully Placed..."
+                    },
+                    "401": {
+                        "description": "We Do not have this book in the store..."
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "summary": "register",
