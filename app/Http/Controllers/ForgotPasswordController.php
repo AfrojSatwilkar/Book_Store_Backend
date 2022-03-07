@@ -46,6 +46,11 @@ class ForgotPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100|unique:users',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
         try {
             $userObject = new User();
             $user = $userObject->userEmailValidation($request->email);
@@ -55,7 +60,7 @@ class ForgotPasswordController extends Controller
             }
             $token = Auth::fromUser($user);
             if ($user) {
-                $delay = now()->addSeconds(10);
+                $delay = now()->addSeconds(5);
                 $user->notify((new PasswordResetRequest($user->email, $token))->delay($delay));
             }
             Log::info('Forgot PassWord Link : ' . 'Email Id :' . $request->email);
@@ -105,6 +110,7 @@ class ForgotPasswordController extends Controller
             'new_password' => 'min:6|required|',
             'confirm_password' => 'required|same:new_password'
         ]);
+
         if ($validate->fails()) {
             return response()->json([
                 'message' => "Password doesn't match"

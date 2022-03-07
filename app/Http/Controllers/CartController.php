@@ -72,7 +72,8 @@ class CartController extends Controller
                         'message' => 'Book not Found'
                     ], 404);
                 }
-                $books = Book::find($book_id);
+
+                $books = $book->findBook($book_id);
                 if ($books->quantity == 0) {
                     return response()->json([
                         'status' => 404,
@@ -95,7 +96,6 @@ class CartController extends Controller
                         return DB::table('carts')->get();
                     });
                     return response()->json([
-                        'cart' => $book_cart,
                         'message' => 'Book added to Cart Sucessfully'], 201);
                 }
 

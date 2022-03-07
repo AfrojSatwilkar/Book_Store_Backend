@@ -58,9 +58,11 @@ class BookController extends Controller
             'Price' => 'required',
             'quantity' => 'required',
         ]);
+
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+
         try {
             $currentUser = JWTAuth::parseToken()->authenticate();
             if ($currentUser) {
@@ -69,14 +71,15 @@ class BookController extends Controller
                 if (!$adminId) {
                     throw new BookStoreException("You are not an ADMIN", 404);
                 }
-                $book = Book::where('name', $request->name)->first();
-                if ($book) {
+
+                $bookDetails = Book::where('name', $request->name)->first();
+                if ($bookDetails) {
                     throw new BookStoreException("Book is already exist in store", 401);
                 }
+
                 $imageName = time() . '.' . $request->image->extension();
                 $path = Storage::disk('s3')->put('book_images', $request->image);
                 $url = env('AWS_URL') . $path;
-                $book = new Book;
                 $book->name = $request->input('name');
                 $book->description = $request->input('description');
                 $book->author = $request->input('author');
@@ -89,7 +92,7 @@ class BookController extends Controller
                 Log::error('Invalid User');
                 throw new BookStoreException("Invalid authorization token", 404);
             }
-            Cache::forget('books');
+
             Cache::remember('books', 3600, function () {
                 return DB::table('books')->get();
             });
@@ -144,9 +147,11 @@ class BookController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'Price' => 'required',
         ]);
+
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+
         try {
             $currentUser = JWTAuth::parseToken()->authenticate();
             if (!$currentUser) {
@@ -158,25 +163,27 @@ class BookController extends Controller
             if (!$adminId) {
                 return response()->json(['message' => 'You are not an ADMIN'], 404);
             }
-            $book = Book::find($request->id);
+
+            $bookDetails = $book->findBook($request->id);
             if (!$book) {
                 throw new BookStoreException("Book not Found", 404);
             }
+
             if ($request->image) {
-                $path = str_replace(env('AWS_URL'), '', $book->image);
+                $path = str_replace(env('AWS_URL'), '', $bookDetails->image);
 
                 if (Storage::disk('s3')->exists($path)) {
                     Storage::disk('s3')->delete($path);
                 }
                 $path = Storage::disk('s3')->put('book_images', $request->image);
                 $pathurl = env('AWS_URL') . $path;
-                $book->image = $pathurl;
+                $bookDetails->image = $pathurl;
             }
-            $book->fill($request->except('image'));
+            $bookDetails->fill($request->except('image'));
             Cache::forget('books');
 
-            if ($book->save()) {
-                Log::info('book updated', ['admin_id' => $book->user_id]);
+            if ($bookDetails->save()) {
+                Log::info('book updated', ['admin_id' => $bookDetails->user_id]);
                 return response()->json(['message' => 'Book updated Sucessfully'], 201);
             }
         } catch (BookStoreException $exception) {
@@ -230,15 +237,16 @@ class BookController extends Controller
             }
             $book = new Book();
             $adminId = $book->adminOrUserVerification($currentUser->id);
-            if (count($adminId) == 0) {
+            if (!$adminId) {
                 return response()->json(['message' => 'You are not an ADMIN'], 404);
             }
-            $book = Book::find($request->id);
-            if (!$book) {
+
+            $bookDetails = $book->findBook($request->id);
+            if (!$bookDetails) {
                 throw new BookStoreException("Couldnot found a book with that given id", 404);
             }
-            $book->quantity += $request->quantity;
-            $book->save();
+            $bookDetails->quantity += $request->quantity;
+            $bookDetails->save();
             Cache::forget('books');
             return response()->json([
                 'status' => 201,
@@ -293,18 +301,19 @@ class BookController extends Controller
             }
             $book = new Book();
             $adminId = $book->adminOrUserVerification($currentUser->id);
-            if (count($adminId) == 0) {
+            if (!$adminId) {
                 return response()->json(['message' => 'You are not an ADMIN'], 401);
             }
-            $book = Book::find($request->id);
-            if (!$book) {
+
+            $bookDetails = $book->findBook($request->id);
+            if (!$bookDetails) {
                 return response()->json(['message' => 'Book not Found'], 404);
             }
 
-            $path = str_replace(env('AWS_URL'), '', $book->image);
+            $path = str_replace(env('AWS_URL'), '', $bookDetails->image);
             if (Storage::disk('s3')->exists($path)) {
                 Storage::disk('s3')->delete($path);
-                if ($book->delete()) {
+                if ($bookDetails->delete()) {
                     Log::info('book deleted', ['user_id' => $currentUser, 'book_id' => $request->id]);
                     Cache::forget('books');
                     return response()->json(['message' => 'Book deleted Sucessfully'], 201);
@@ -365,16 +374,15 @@ class BookController extends Controller
     public function sortOnPriceLowToHigh()
     {
         $currentUser = JWTAuth::parseToken()->authenticate();
-
+        $book = new Book();
         if ($currentUser) {
-            $book = Book::orderBy('books.Price')
-                ->get();
+            $bookDetails = $book->ascendingOrder();
         }
-        if ($book == []) {
+        if ($bookDetails == []) {
             return response()->json(['message' => 'Books not found'], 404);
         }
         return response()->json([
-            'books' => $book,
+            'books' => $bookDetails,
             'message' => 'These much books are in store .....'
         ], 201);
     }
@@ -397,16 +405,17 @@ class BookController extends Controller
     {
 
         $currentUser = JWTAuth::parseToken()->authenticate();
-
+        $book = new Book();
         if ($currentUser) {
-            $book = Book::orderBy('books.Price', 'desc')
-                ->get();
+            $bookDetails = $book->descendingOrder();
+            // $book = Book::orderBy('books.Price', 'desc')
+            //     ->get();
         }
-        if ($book == []) {
+        if ($bookDetails == []) {
             return response()->json(['message' => 'Books not found'], 404);
         }
         return response()->json([
-            'books' => $book,
+            'books' => $bookDetails,
             'message' => 'These much books are in store .....'
         ], 201);
     }

@@ -82,7 +82,7 @@ class UserController extends Controller
                 throw new BookStoreException("The email has already been taken", 401);
             }
 
-            $userDetails = $userObject->saveUserDetails($userArray);
+            $userObject->saveUserDetails($userArray);
             Log::info('Registered user Email : ' . 'Email Id :' . $request->email);
             Cache::remember('users', 3600, function () {
                 return DB::table('users')->get();
@@ -135,7 +135,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
             }
-            $value = Cache::remember('users', 1, function () {
+            Cache::remember('users', 1, function () {
                 return User::all();
             });
 

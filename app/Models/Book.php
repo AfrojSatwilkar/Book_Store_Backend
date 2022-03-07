@@ -36,7 +36,11 @@ class Book extends Model
     }
 
     public function ascendingOrder(){
-        return Book::orderBy('books.Price')->get();
+        return Book::orderBy('Price')->get();
+    }
+
+    public function descendingOrder(){
+        return Book::orderBy('Price', 'desc')->get();
     }
 
     public function user() {
