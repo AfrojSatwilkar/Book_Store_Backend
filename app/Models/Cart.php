@@ -18,6 +18,10 @@ class Cart extends Model
         ])->first();
     }
 
+    public function getCartDetails($user_id) {
+        return Cart::where('user_id', $user_id)->get();
+    }
+
     public function book()
     {
         return $this->belongsTo(Book::class);

@@ -59,4 +59,5 @@ Route::group(['middleware' => 'api'], function() {
     Route::get('getwishlist', [WishlistController::class, 'getAllBooksInWishlist']);
 
     Route::post('placeorder', [OrderController::class, 'placeOrder']);
+    Route::post('placeorderbycartid', [OrderController::class, 'placeOrderByCartId']);
 });

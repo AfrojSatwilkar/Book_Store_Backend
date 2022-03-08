@@ -193,10 +193,6 @@ class WishlistController extends Controller
             }
             if ($currentUser) {
                 $books = $wishlist->getAllWishlistBooks($currentUser->id);
-                // $books = Wishlist::leftJoin('books', 'wishlists.book_id', '=', 'books.id')
-                //     ->select('books.id', 'books.name', 'books.author', 'books.description', 'books.Price', 'wishlists.book_quantity')
-                //     ->where('wishlists.user_id', '=', $currentUser->id)
-                //     ->get();
 
                 if ($books == []) {
                     Log::error('Book Not Found');

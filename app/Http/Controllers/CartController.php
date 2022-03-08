@@ -444,11 +444,11 @@ class CartController extends Controller
                 $cart->book_id = $wishlist['book_id'];
 
                 if ($currentUser->carts()->save($cart)) {
+                    $wishlist->delete();
                     Cache::remember('carts', 3600, function () {
                         return DB::table('carts')->get();
                     });
                     return response()->json([
-                        'cart' => $book_cart,
                         'message' => 'Book added to Cart Sucessfully'], 201);
                 }
 

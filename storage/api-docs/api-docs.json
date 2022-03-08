@@ -820,6 +820,50 @@
                 ]
             }
         },
+        "/api/placeorderbycartid": {
+            "post": {
+                "summary": "Place  Order",
+                "description": " Place a order ",
+                "operationId": "ff07cfa31ba2267ecf294afde5209005",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "address_id",
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "address_id": {
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order Successfully Placed..."
+                    },
+                    "401": {
+                        "description": "We Do not have this book in the store..."
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "summary": "register",

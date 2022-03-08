@@ -30,6 +30,12 @@ class Book extends Model
                     ->first();
     }
 
+    public function getBookDetailsById($id) {
+        return Book::select('id', 'name', 'quantity', 'author', 'Price')
+                    ->where('id', '=', $id)
+                    ->first();
+    }
+
     public function findBook($bookId) {
         $book = Book::where('id', $bookId)->first();
         return $book;

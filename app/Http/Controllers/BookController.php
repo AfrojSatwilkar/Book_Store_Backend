@@ -408,8 +408,6 @@ class BookController extends Controller
         $book = new Book();
         if ($currentUser) {
             $bookDetails = $book->descendingOrder();
-            // $book = Book::orderBy('books.Price', 'desc')
-            //     ->get();
         }
         if ($bookDetails == []) {
             return response()->json(['message' => 'Books not found'], 404);
