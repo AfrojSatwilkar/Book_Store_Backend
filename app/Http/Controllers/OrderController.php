@@ -125,7 +125,7 @@ class OrderController extends Controller
      *        ),
      *    ),
      *   @OA\Response(response=201, description="Order Successfully Placed..."),
-     *   @OA\Response(response=401, description="We Do not have this book in the store..."),
+     *   @OA\Response(response=401, description="We Do not have this book in the store."),
      *   security = {
      * {
      * "Bearer" : {}}}
