@@ -44,7 +44,7 @@ class ForgotPasswordController extends Controller
     public function forgotPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:100|unique:users',
+            'email' => 'required|string|email|max:100',
         ]);
 
         if ($validator->fails()) {
